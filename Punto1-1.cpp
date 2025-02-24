@@ -13,21 +13,21 @@ int timeC = 0;
 int timeD = 0;
 
 void* func_A(void* arg) {
-	timeA = rand() % 4 + 1;
+	timeA = rand() % 3 + 1;
 	sleep(timeA);
         cout << "Ejecución de A en " << timeA << " seg"<< endl; 
         pthread_exit(NULL);
 }
 
 void* func_B(void* arg) {
-	timeB = rand() % 4 + 1;
+	timeB = rand() % 3 + 1;
         sleep(timeB);
         cout << "Ejecución de B en " << timeB << " seg"<< endl;
         pthread_exit(NULL);
 }
 
 void* func_C(void* arg) {
-        timeC = rand() % 4 + 1;
+        timeC = rand() % 3 + 1;
         sleep(timeC);
         cout << "Ejecución de C en " << timeC << " seg"<< endl;
         pthread_exit(NULL);
