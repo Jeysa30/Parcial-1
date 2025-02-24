@@ -1,57 +1,82 @@
 #include <iostream>
 #include <omp.h>
+#include <cstdlib>
+#include <unistd.h>
 
-void func_A() {
-	std::cout << "Ejecucion de A\n";
+int timeA = 0;
+int timeB = 0;
+int timeC = 0;
+int timeD = 0;
+int timeE = 0;
+
+
+int func_A() {
+	timeA = rand() % 3 + 1;  // Espera entre 1 y 3 segundos
+	sleep(timeA);
+        std::cout << "Ejecución de A (Espero " << timeA << "seg)\n";
+	return timeA;
 }
 
-void func_B() {
-	std::cout << "Ejecucion de B\n";
+int func_B() {
+	timeB = rand() % 3 + 1;
+	sleep(timeB);
+	std::cout << "Ejecución de B (Espero " << timeB << "seg)\n";
+	return timeB;
 }
 
-void func_C() {
-	std::cout << "Ejecucion de C\n";
+int func_C() {
+	timeC = rand() % 3 + 1;
+        sleep(timeC);
+        std::cout << "Ejecución de C (Espero " << timeC << "seg)\n";
+        return timeC;
 }
 
-void func_D() {
-	std::cout << "Ejecucion de D\n";
+int func_D() {
+	timeD = timeB + timeC;
+        sleep(timeD);
+        std::cout << "Ejecución de D (Espero " << timeD << "seg)\n";
+        return timeD;
+	
 }
 
-void func_E() {
-	std::cout << "Ejecucion de E\n";
+int func_E() {
+	timeE = timeA + timeD;
+        sleep(timeE);
+        std::cout << "Ejecución de E (Espero " << timeE << "seg)\n";
+        return timeE;
+	
 }
 
 int main() {
-	// Variables para que las dependencias funcionen correctamente
-	int A, B, C, D;
+	srand(time(NULL));
 
 	#pragma omp parallel
 	{
 		#pragma omp single
 		{
-			#pragma omp task depend(out: A)
+			#pragma omp task depend(out: timeA)
 			{
-			    func_A();
+			    timeA = func_A();
 			}
 
-			#pragma omp task depend(in: A) depend(out: B)
+			#pragma omp task depend(in: timeA) depend(out: timeB)
 			{
-			    func_B();
+			    timeB = func_B();
 			}
 
-			#pragma omp task depend(in: A) depend(out: C)
+			#pragma omp task depend(in: timeA) depend(out: timeC)
 			{
-			    func_C();
+			    timeC = func_C();
 			}	
 
-			#pragma omp task depend(in: B, C) depend(out: D)
+			#pragma omp task depend(in: timeB, timeC) depend(out: timeD)
 			{
-			    func_D();
+			    timeD = func_D();
 			}
 
-			#pragma omp task depend(in: A, D)
+			#pragma omp task depend(in: timeA, timeD)
 			{
-			    func_E();
+			    timeE = func_E();
 			}
 		}
 	}
